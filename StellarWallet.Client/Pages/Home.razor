@@ -1,0 +1,41 @@
+﻿@page "/"
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<button @onclick="OnButtonClick">Llamar a la API</button>
+<p>@apiResponse?.PublicKey</p>
+<p>@apiResponse?.SecretKey</p>
+
+@code {
+    private ApiResponse? apiResponse;
+
+    private async Task OnButtonClick()
+    {
+        // Define la URL de la API
+        var url = "http://localhost:5235/Transaction/AccountCreation";
+
+        // Crea un objeto HttpClient
+        var httpClient = new HttpClient();
+
+        // Realiza la solicitud HTTP a la API
+        var response = await httpClient.GetAsync(url);
+
+        // Deserializa la respuesta JSON
+        var result = await response.Content.ReadAsStringAsync();
+
+        apiResponse = JsonConvert.DeserializeObject<ApiResponse>(result);
+
+        // Muestra los datos de la respuesta al usuario
+        Console.WriteLine(result);
+    }
+
+    public partial class ApiResponse(string publicKey, string secretKey) : ComponentBase
+    {
+        public string PublicKey { get; set; } = publicKey;
+        public string SecretKey { get; set; } = secretKey;
+    }
+}
