@@ -21,10 +21,19 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowBlazor", builder =>
+    {
+        builder.WithOrigins("http://localhost:5031/")
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
 
 var app = builder.Build();
+
+app.UseCors("AllowBlazor"); // Use the policy named "AllowBlazor"
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
